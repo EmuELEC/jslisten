@@ -53,8 +53,8 @@
 
 #define NAME_LENGTH 128
 #define MYPROGNAME "jslisten"
-#define myConfFile "/.jslisten"
-#define myGlConfFile "/etc/jslisten.cfg"
+#define myConfFile "/storage/.config/emuelec/configs/jslisten.cfg"
+#define myGlConfFile "/storage/.config/emuelec/configs/jslisten.cfg"
 //#define MY_LOG_LEVEL LOG_NOTICE //LOG_DEBUG //LOG_NOTICE
 
 #define INI_BUFFERSIZE      512
@@ -561,6 +561,7 @@ int bindJoy(void) {
           int rc = system(myKeys[needTrigger].swFilename);
           if ( rc == 0 ) {
             syslog(LOG_INFO, "Call succesfull\n");
+            exit(0);
           } else {
             syslog(LOG_INFO, "Call failed\n");
           }
