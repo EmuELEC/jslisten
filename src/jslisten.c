@@ -561,7 +561,7 @@ int bindJoy(void) {
           int rc = system(myKeys[needTrigger].swFilename);
           if ( rc == 0 ) {
             syslog(LOG_INFO, "Call succesfull\n");
-		exit(0);
+            exit(0);
           } else {
             syslog(LOG_INFO, "Call failed\n");
           }
