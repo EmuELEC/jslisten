@@ -54,7 +54,7 @@
 #define NAME_LENGTH 128
 #define MYPROGNAME "jslisten"
 #define myConfFile "/storage/.config/emuelec/configs/jslisten.cfg"
-#define myGlConfFile "/storage/.config/emuelec/configs/jslisten.cfg"
+#define myGlConfFile "/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/config/jslisten.cfg"
 //#define MY_LOG_LEVEL LOG_NOTICE //LOG_DEBUG //LOG_NOTICE
 
 #define INI_BUFFERSIZE      512
