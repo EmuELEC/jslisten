@@ -53,7 +53,8 @@
 
 #define NAME_LENGTH 128
 #define MYPROGNAME "jslisten"
-#define myConfFile ".kodi/addons/script.emuelec.Amlogic-ng.launcher/config/jslisten.cfg"
+#define myConfFile "/.kodi/addons/script.emuelec.Amlogic.launcher/config/jslisten.cfg"
+#define myConfFileNG "/.kodi/addons/script.emuelec.Amlogic-ng.launcher/config/jslisten.cfg"
 #define myGlConfFile "/emuelec/configs/jslisten.cfg"
 //#define MY_LOG_LEVEL LOG_NOTICE //LOG_DEBUG //LOG_NOTICE
 
@@ -133,7 +134,22 @@ int getConfigFile() {
       // file exists
       rc = 0;
       syslog(LOG_INFO, "reading config %s\n", iniFile);
-    }
+    } else { 
+	printf("Amlogic ini not found %s\n", iniFile);
+	}
+  }
+  // chefor for amlogic-ng
+    if ( getenv("HOME") != NULL ) {
+    syslog(LOG_INFO, "taking user config %s\n", iniFile);
+    strncat(strncpy(iniFile, getenv("HOME"), INI_BUFFERSIZE-1), myConfFileNG, INI_BUFFERSIZE-1);
+    // Look for personal file
+    if( access( iniFile, R_OK ) != -1 ) {
+      // file exists
+      rc = 0;
+      syslog(LOG_INFO, "reading config %s\n", iniFile);
+    } else { 
+	printf("Amlogic-ng ini not found %s\n", iniFile);
+	}
   }
   if ( rc > 0 ) {
     // file doesn't exist, check global
@@ -152,6 +168,9 @@ int getConfigFile() {
         syslog(LOG_ERR, "err: no config found. Please maintain all required values in %s\n", iniFile);
       }
     }
+  }
+  if ( rc > 0 ) {
+   printf("Error: No config file found. Please make sure it exists on %s\n", myGlConfFile);
   }
   return rc;
 }
@@ -174,12 +193,14 @@ void readConfig(void) {
           n = ini_gets(section, str, "dummy", myKeys[numHotkeys].swFilename, sizearray(myKeys[numHotkeys].swFilename), iniFile);
           if ( n > 5 && strncmp("dummy", myKeys[numHotkeys].swFilename, 5) != 0 ) { // Value is not empty
             syslog(LOG_INFO, "Filename: %s\n", myKeys[numHotkeys].swFilename);
+            printf("Will Run: %s\n", myKeys[numHotkeys].swFilename);
           }
         }
         if ( strncmp("button1", str, 7) == 0 ) { // Key found
           l = ini_getl(section, str, BUTTON_DEFINED_RANGE, iniFile);
           if ( buttonDefined(l) == true ) { // Value is not empty
             syslog(LOG_INFO, "button1: %ld\n", l);
+            printf("button1: %ld\n", l);
             myKeys[numHotkeys].button1 = l;
             myKeys[numHotkeys].activeButtons++;
           }
@@ -188,6 +209,7 @@ void readConfig(void) {
           l = ini_getl(section, str, BUTTON_DEFINED_RANGE, iniFile);
           if ( buttonDefined(l) == true ) { // Value is not empty
             syslog(LOG_INFO, "button2: %ld\n", l);
+            printf("button2: %ld\n", l);
             myKeys[numHotkeys].button2 = l;
             myKeys[numHotkeys].activeButtons++;
           }
@@ -196,6 +218,7 @@ void readConfig(void) {
           l = ini_getl(section, str, BUTTON_DEFINED_RANGE, iniFile);
           if ( buttonDefined(l) == true ) { // Value is not empty
             syslog(LOG_INFO, "button3: %ld\n", l);
+            printf("button3: %ld\n", l);
             myKeys[numHotkeys].button3 = l;
             myKeys[numHotkeys].activeButtons++;
           }
@@ -204,6 +227,7 @@ void readConfig(void) {
           l = ini_getl(section, str, BUTTON_DEFINED_RANGE, iniFile);
           if ( buttonDefined(l) == true ) { // Value is not empty
             syslog(LOG_INFO, "button4: %ld\n", l);
+            printf("button4: %ld\n", l);
             myKeys[numHotkeys].button4 = l;
             myKeys[numHotkeys].activeButtons++;
           }
@@ -561,9 +585,11 @@ int bindJoy(void) {
           int rc = system(myKeys[needTrigger].swFilename);
           if ( rc == 0 ) {
             syslog(LOG_INFO, "Call succesfull\n");
+            printf("Call succesfull\n");
             exit(0);
           } else {
             syslog(LOG_INFO, "Call failed\n");
+            printf("Call failed\n");
           }
           if (mode == PLAIN) {
             // reset state, so we call only once
@@ -701,8 +727,10 @@ int main(int argc, char* argv[]) {
 
   syslog(LOG_NOTICE, "Using device path: %s\n", myDevPath);
   syslog(LOG_NOTICE, "Using button mode: %s\n", mode == PLAIN ? MODE_PLAIN_STR : MODE_HOLD_STR);
-
   syslog(LOG_NOTICE, "Listen to joystick inputs ...\n");
+  printf("Using device path: %s\n", myDevPath);
+  printf("Using button mode: %s\n", mode == PLAIN ? MODE_PLAIN_STR : MODE_HOLD_STR);
+  printf("Load cfg file ...\n");
 
   // Get the configuration file
   rc = getConfigFile();
