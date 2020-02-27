@@ -586,7 +586,6 @@ int bindJoy(void) {
           if ( rc == 0 ) {
             syslog(LOG_INFO, "Call succesfull\n");
             printf("Call succesfull\n");
-            exit(0);
           } else {
             syslog(LOG_INFO, "Call failed\n");
             printf("Call failed\n");
